@@ -7,6 +7,13 @@ public class Etudiant {
     private String nomE;
     private String prenomE;
     private Formation formation;
-    private int totalECTS;
+    private int totalECTS = 0;
     ArrayList<InscriptionUe> inscriptions =new ArrayList<>();
+
+    public Etudiant(int numeroEtudiant, String nomE, String prenomE, Formation formation) {
+        this.numeroEtudiant = numeroEtudiant;
+        this.nomE = nomE;
+        this.prenomE = prenomE;
+        this.formation = formation;
+    }
 }
