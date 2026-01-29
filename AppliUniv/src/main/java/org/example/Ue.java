@@ -3,7 +3,7 @@ package org.example;
 import java.util.ArrayList;
 
 public class Ue {
-    private static int codeUe = 1;
+    private static int codeUe = 0;
     private String nomUe;
     private int ects;
     private boolean ouverture;

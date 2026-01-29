@@ -3,7 +3,7 @@ package org.example;
 import java.util.ArrayList;
 
 public class Etudiant {
-    private int numeroEtudiant;
+    private static int numeroEtudiant= 22300000;
     private String nomE;
     private String prenomE;
     private Formation formation;
@@ -11,7 +11,7 @@ public class Etudiant {
     ArrayList<InscriptionUe> inscriptions =new ArrayList<>();
 
     public Etudiant(int numeroEtudiant, String nomE, String prenomE, Formation formation) {
-        this.numeroEtudiant = numeroEtudiant;
+        this.numeroEtudiant +=1;
         this.nomE = nomE;
         this.prenomE = prenomE;
         this.formation = formation;
