@@ -2,22 +2,55 @@ package org.example;
 
 import java.util.ArrayList;
 
-public class Parcours extends Formation{
-    private static int idParcours = 0;
+public class Parcours{
+    private static int compteur=0;
+    private int codeParcours;
     private String nomParcours;
-    ArrayList<Ue> ueSpé = new ArrayList<>();
+    private Formation formation;
+    private ArrayList<Ue> ueSpe = new ArrayList<>();
 
 
     /**
      * <p>Cette méthode est le constructeur de notre classe Parcours</p>
      * @param nomParcours est le nom du parcours
-     * @param nomFormation est le nom de la formation
+     * @param formation est le nom de la formation a laquelle le parcours est rattaché
      */
-
-    public Parcours(String nomParcours, String nomFormation) {
-        super(nomFormation);
-        Parcours.idParcours += 1;
+    public Parcours(String nomParcours,Formation formation) {
+        compteur++;
+        this.codeParcours=compteur;
         this.nomParcours = nomParcours;
+        this.formation=formation;
     }
 
+    /**
+     * <p>Un getter qui permet d'obtenir le code du parcours</p>
+     * @return le code du parcours
+     */
+    public int getIdParcours() {
+        return codeParcours;
+    }
+
+    /**
+     * <p>Un getter qui permet d'obtenir le nom du parcours</p>
+     * @return le nom du parcours
+     */
+    public String getNomParcours() {
+        return nomParcours;
+    }
+
+    /**
+     * <p>Un getter qui permet d'obtenir la formation a laquelle le parcours est lié</p>
+     * @return la formation a laquelle le parcours est lié
+     */
+    public Formation getFormation() {
+        return formation;
+    }
+
+    /**
+     * <p>Un getter qui permet d'obtenir la liste des Ue speciale au parcours</p>
+     * @return la liste des Ue speciale au parcours
+     */
+    public ArrayList<Ue> getUeSpe() {
+        return ueSpe;
+    }
 }
