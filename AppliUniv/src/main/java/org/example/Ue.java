@@ -3,7 +3,7 @@ package org.example;
 import java.util.ArrayList;
 
 public class Ue {
-    private static int compteur =0;
+    private static int compteur =0;/*Sert a connaitre le numéro de la dernière UE instanciée*/
     private int codeUe;
     private String nomUe;
     private int ects;
@@ -18,7 +18,7 @@ public class Ue {
      * @param ouverture est le type d'Ue
      */
     public Ue(String nomUe, int ects, boolean ouverture) {
-        compteur++;
+        compteur++;/*Augmente de 1 pour la prochaine UE instanciée*/
         this.codeUe=compteur;
         this.nomUe = nomUe;
         this.ects = ects;

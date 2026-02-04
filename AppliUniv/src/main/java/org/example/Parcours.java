@@ -3,7 +3,7 @@ package org.example;
 import java.util.ArrayList;
 
 public class Parcours{
-    private static int compteur=0;
+    private static int compteur=0;/*Sert a connaitre le numéro du dernier parcours instancié*/
     private int codeParcours;
     private String nomParcours;
     private Formation formation;
@@ -16,7 +16,7 @@ public class Parcours{
      * @param formation est le nom de la formation a laquelle le parcours est rattaché
      */
     public Parcours(String nomParcours,Formation formation) {
-        compteur++;
+        compteur++;/*Augmente de 1 pour le prochain parcours instancié*/
         this.codeParcours=compteur;
         this.nomParcours = nomParcours;
         this.formation=formation;

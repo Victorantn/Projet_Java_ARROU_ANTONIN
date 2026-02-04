@@ -3,7 +3,7 @@ package org.example;
 import java.util.ArrayList;
 
 public class Formation {
-    private static int compteur=0;
+    private static int compteur=0; /*Sert a connaitre le numéro de la dernière formation instanciée*/
     private int codeFormation;
     private String nomFormation;
     private ArrayList<Ue> ueBase = new ArrayList<>();
@@ -13,7 +13,7 @@ public class Formation {
      * @param nomFormation est le nom de la formation
      */
     public Formation(String nomFormation) {
-        compteur++;
+        compteur++;/*Augmente de 1 pour la prochaine formation instanciée*/
         this.codeFormation =compteur;
         this.nomFormation = nomFormation;
     }

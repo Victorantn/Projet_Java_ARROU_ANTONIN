@@ -1,7 +1,7 @@
 package org.example;
 
 public class InscriptionUe {
-    private static int compteur=0;
+    private static int compteur=0;/*Sert a connaitre le numéro de la dernière inscription instanciée*/
     private int codeInscrip;
     private Ue ue;
     private String anneeUniversitaire;
@@ -15,7 +15,7 @@ public class InscriptionUe {
      * @param semestre est le type de semestre correspondant
      */
     public InscriptionUe(Ue ue, String anneeUniversitaire, Semestre semestre){
-        compteur++;
+        compteur++; compteur++;/*Augmente de 1 pour la prochaine inscriptio, instanciée*/
         this.codeInscrip=compteur;
         this.ue = ue;
         this.anneeUniversitaire = anneeUniversitaire;

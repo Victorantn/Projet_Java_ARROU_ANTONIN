@@ -3,7 +3,7 @@ package org.example;
 import java.util.ArrayList;
 
 public class Etudiant {
-    private static int compteur =26300000;
+    private static int compteur =26300000; /*Sert a connaitre le numéro du dernier étudiant instancié*/
     private int numeroEtudiant;
     private String nomE;
     private String prenomE;
@@ -19,7 +19,7 @@ public class Etudiant {
      * @param formation est la formation de l'étudiant
      */
     public Etudiant(String nomE, String prenomE, Formation formation) {
-        compteur++;
+        compteur++; /*Augmente de 1 pour le prochain étudiant instancié*/
         this.numeroEtudiant =compteur;
         this.nomE = nomE;
         this.prenomE = prenomE;
