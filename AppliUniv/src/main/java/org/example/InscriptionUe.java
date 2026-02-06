@@ -15,8 +15,8 @@ public class InscriptionUe {
      * @param semestre est le type de semestre correspondant
      */
     public InscriptionUe(Ue ue, String anneeUniversitaire, Semestre semestre){
-        compteur++; compteur++;/*Augmente de 1 pour la prochaine inscriptio, instanciée*/
-        this.codeInscrip=compteur;
+        compteur++;/*Augmente de 1 pour la prochaine inscription instanciée*/
+        this.codeInscrip = compteur;
         this.ue = ue;
         this.anneeUniversitaire = anneeUniversitaire;
         this.semestre = semestre;
@@ -61,5 +61,17 @@ public class InscriptionUe {
      */
     public Statut getStatut() {
         return statut;
+    }
+
+    public String toString(){
+        String s="";
+        s+="------------------" + "\n";
+        s+="codeInscrip : "+codeInscrip+"\n";
+        s+="NomUe : " + ue.getNomUe() + " | CodeUe : " + ue.getCodeUe();
+        s+="anneeUniversitaire : "+anneeUniversitaire+"\n";
+        s+="semestre : "+semestre+"\n";
+        s+="statut : "+statut+"\n";
+        s+="------------------" + "\n";
+        return s;
     }
 }

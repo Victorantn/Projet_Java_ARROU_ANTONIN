@@ -41,4 +41,25 @@ public class Formation {
     public ArrayList<Ue> getUeBase() {
         return ueBase;
     }
+
+
+    /**
+     * <p>La méthode qui nous renvoie de manière structurée les données de l'instance de classe</p>
+     * @return
+     */
+    public String toString(){
+        String s="";
+        s+="------------------" + "\n";
+        s+="codeFormation : " + codeFormation+"\n";
+        s+="nomFormation : " + nomFormation+"\n";
+        s += "Ue de Base : " + "\n";
+        for(Ue u : ueBase){
+            s+= "   - nomUe : " + u.getNomUe() + " | codeUe : " + u.getCodeUe() + "\n";
+        }
+        s+="------------------" + "\n";
+        return s;
+    }
+
+
+
 }

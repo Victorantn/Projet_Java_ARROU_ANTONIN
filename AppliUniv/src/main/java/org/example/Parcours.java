@@ -53,4 +53,18 @@ public class Parcours{
     public ArrayList<Ue> getUeSpe() {
         return ueSpe;
     }
+
+    public String toString(){
+        String s="";
+        s+="------------------" + "\n";
+        s +="CodeParcours : " + codeParcours+"\n";
+        s +="NomParcours : " + nomParcours+"\n";
+        s +="Formation : " + formation.getNomFormation() +"\n";
+        s +="UeSpe : " + "\n";
+        for(Ue u : ueSpe){
+            s += "   - nomUe : " + u.getNomUe() + " | codeUe : " + u.getCodeUe() + "\n";
+        }
+        s+="------------------" + "\n";
+        return s;
+    }
 }

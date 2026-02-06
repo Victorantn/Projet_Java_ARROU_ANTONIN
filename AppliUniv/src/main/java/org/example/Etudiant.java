@@ -9,7 +9,8 @@ public class Etudiant {
     private String prenomE;
     private Formation formation;
     private int totalECTS = 0;
-    private ArrayList<InscriptionUe> inscriptions =new ArrayList<>();
+    private ArrayList<InscriptionUe> inscriptions = new ArrayList<>();
+    private Parcours parcours;
 
 
     /**
@@ -18,12 +19,13 @@ public class Etudiant {
      * @param prenomE est le prénom de l'étudiant
      * @param formation est la formation de l'étudiant
      */
-    public Etudiant(String nomE, String prenomE, Formation formation) {
+    public Etudiant(String nomE, String prenomE, Formation formation, Parcours parcours) {
         compteur++; /*Augmente de 1 pour le prochain étudiant instancié*/
         this.numeroEtudiant =compteur;
         this.nomE = nomE;
         this.prenomE = prenomE;
         this.formation = formation;
+        this.parcours = parcours
     }
 
     /**
@@ -72,5 +74,24 @@ public class Etudiant {
      */
     public ArrayList<InscriptionUe> getInscriptions() {
         return inscriptions;
+    }
+
+
+    public String toString(){
+        String s="";
+        s+="------------------" + "\n";
+        s+="numeroEtudiant : "+numeroEtudiant +"\n";
+        s+="nomE : "+nomE + "\n";
+        s+="prenomE : "+prenomE + "\n";
+        s+="formation : " + formation.getNomFormation() + "\n";
+        s+="parcours : " + formation.getNomFormation() + "\n";
+        s+="Inscriptions : " + "\n";
+        for(InscriptionUe i : inscriptions){
+            s+= "   - nomUe : " + i.getUe().getNomUe() + " | codeUe : " + i.getUe().getCodeUe() + "\n";
+        }
+        s+="totalECTS : " + totalECTS + "\n";
+        s+="------------------" + "\n";
+        return s;
+
     }
 }

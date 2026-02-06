@@ -19,7 +19,7 @@ public class Ue {
      */
     public Ue(String nomUe, int ects, boolean ouverture) {
         compteur++;/*Augmente de 1 pour la prochaine UE instanciée*/
-        this.codeUe=compteur;
+        this.codeUe = compteur;
         this.nomUe = nomUe;
         this.ects = ects;
         this.ouverture = ouverture;
@@ -63,5 +63,20 @@ public class Ue {
      */
     public ArrayList<Ue> getUePreRequis() {
         return uePreRequis;
+    }
+
+
+    public String toString(){
+        String s="------------------"+"\n";
+        s+= "nomUe : " + nomUe+ "\n";
+        s+= "codeUe : " + codeUe+"\n";
+        s+= "ects : " + ects+"\n";
+        s+= "ouverture : " + ouverture+"\n";
+        s+= "Ue pré-requis : " + "\n";
+        for(Ue u : uePreRequis){
+            s+="   - nomUe : " + u.getNomUe() + " | codeUe : " + u.getCodeUe() + "\n";
+        }
+        s+="------------------"+"\n";
+        return s;
     }
 }
