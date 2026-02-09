@@ -54,6 +54,11 @@ public class Parcours{
         return ueSpe;
     }
 
+
+    /**
+     * <p>Le toString de notre classe Parcours, elle retourne les informations les plus importantes par parcours sous forme de chaine de charactères</p>
+     * @return le code du parcours, le nom du parcours, la formation à laquelle il appartient ainsi que la liste des Ue spécialisés du parcours
+     */
     public String toString(){
         String s="";
         s+="------------------" + "\n";

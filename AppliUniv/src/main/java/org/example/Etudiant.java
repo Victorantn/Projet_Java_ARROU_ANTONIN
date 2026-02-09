@@ -77,6 +77,10 @@ public class Etudiant {
     }
 
 
+    /**
+     * <p>Le toString de notre classe Etudiant, elle retourne les informations les plus importantes par Etudiant sous forme de chaine de charactères</p>
+     * @return le numero étudiant, le nom de l'étudiant, le prénom de l'étudiant, la formation à laquelle il appartient, le parcours dans lequel il étudie, la liste d'inscription d'Ue auxquelles il est inscrit ainsi que le total d'ects validé
+     */
     public String toString(){
         String s="";
         s+="------------------" + "\n";

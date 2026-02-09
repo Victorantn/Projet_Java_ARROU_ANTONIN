@@ -66,10 +66,16 @@ public class Ue {
     }
 
 
+    /**
+     * <p>Le toString de notre classe Ue qui retourne les informations les plus importantes de l'Ue sous forme de chaine de charactères</p>
+     * @return le code de l'Ue, le nom de l'Ue, le nombre d'ECTs, le type de l'Ue (ouverture ou non) ainsi que la liste des Ue pré-requis pour pouvoir s'inscrire à l'Ue
+     */
+
+
     public String toString(){
         String s="------------------"+"\n";
-        s+= "nomUe : " + nomUe+ "\n";
         s+= "codeUe : " + codeUe+"\n";
+        s+= "nomUe : " + nomUe+ "\n";
         s+= "ects : " + ects+"\n";
         s+= "ouverture : " + ouverture+"\n";
         s+= "Ue pré-requis : " + "\n";

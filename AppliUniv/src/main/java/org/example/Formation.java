@@ -44,8 +44,8 @@ public class Formation {
 
 
     /**
-     * <p>La méthode qui nous renvoie de manière structurée les données de l'instance de classe</p>
-     * @return
+     * <p>Le toString de notre classe, elle retourne les informations les plus importantes par Formation sous forme de chaine de charactères</p>
+     * @return le code de la formation, le nom de la formation ainsi que les Ue de base à la formation
      */
     public String toString(){
         String s="";

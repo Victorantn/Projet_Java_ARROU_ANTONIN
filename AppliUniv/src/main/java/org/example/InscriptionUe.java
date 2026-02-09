@@ -63,6 +63,11 @@ public class InscriptionUe {
         return statut;
     }
 
+
+    /**
+     * <p>Le toString de notre classe InscriptionUe qui retourne les informations les plus importantes sous forme de chaine de charactères</p>
+     * @return le code de l'inscription, le nom de l'Ue, l'année universitaire, le semestre (pair ou impair) ainsi que le statut (validé, en cours, échoué)
+     */
     public String toString(){
         String s="";
         s+="------------------" + "\n";
