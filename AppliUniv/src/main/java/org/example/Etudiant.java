@@ -69,6 +69,12 @@ public class Etudiant {
     }
 
     /**
+     * <p>Un getter qui permet d'obtenir le parcours de l'etudiant</p>
+     * @return le parcours de l'etudiant
+     */
+    public Parcours getParcours(){return parcours;}
+
+    /**
      * <p>Un getter qui permet d'obtenir la liste des inscriptionsUE de l'etudiant</p>
      * @return la liste des inscriptionsUE de l'etudiant
      */
