@@ -70,8 +70,6 @@ public class Ue {
      * <p>Le toString de notre classe Ue qui retourne les informations les plus importantes de l'Ue sous forme de chaine de charactères</p>
      * @return le code de l'Ue, le nom de l'Ue, le nombre d'ECTs, le type de l'Ue (ouverture ou non) ainsi que la liste des Ue pré-requis pour pouvoir s'inscrire à l'Ue
      */
-
-
     public String toString(){
         String s="------------------"+"\n";
         s+= "codeUe : " + codeUe+"\n";
@@ -84,5 +82,24 @@ public class Ue {
         }
         s+="------------------"+"\n";
         return s;
+    }
+
+    /**
+     * <p>Permet d'ajouter une Ue dans la liste des Ue prerequises pour l'ue courante</p>
+     * @param ue
+     */
+    public void ajouterPrerequis(Ue ue){
+        uePreRequis.add(ue);
+    }
+
+    /**
+     * <p>Permet de supprimer une Ue dans la liste des Ue prerequises pour l'ue courante</p>
+     * <p>Verifie que la liste n'est pas vide</p>
+     * @param ue
+     */
+    public void supprimerPrerequis(Ue ue){
+        if(!uePreRequis.isEmpty()){
+            uePreRequis.remove(ue);
+        }
     }
 }

@@ -54,7 +54,6 @@ public class Parcours{
         return ueSpe;
     }
 
-
     /**
      * <p>Le toString de notre classe Parcours, elle retourne les informations les plus importantes par parcours sous forme de chaine de charactères</p>
      * @return le code du parcours, le nom du parcours, la formation à laquelle il appartient ainsi que la liste des Ue spécialisés du parcours
@@ -71,5 +70,24 @@ public class Parcours{
         }
         s+="------------------" + "\n";
         return s;
+    }
+
+    /**
+     * <p>Permet d'ajouter une Ue dans la liste des Ue spe pour le parcours</p>
+     * @param ue
+     */
+    public void ajouterPrerequis(Ue ue){
+        ueSpe.add(ue);
+    }
+
+    /**
+     * <p>Permet de supprimer une Ue dans la liste des Ue spe pour le parcours</p>
+     * <p>Verifie que la liste n'est pas vide</p>
+     * @param ue
+     */
+    public void supprimerPrerequis(Ue ue){
+        if(!ueSpe.isEmpty()){
+            ueSpe.remove(ue);
+        }
     }
 }

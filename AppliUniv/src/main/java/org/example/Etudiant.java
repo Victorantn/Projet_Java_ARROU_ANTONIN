@@ -25,7 +25,7 @@ public class Etudiant {
         this.nomE = nomE;
         this.prenomE = prenomE;
         this.formation = formation;
-        this.parcours = parcours
+        this.parcours = parcours;
     }
 
     /**
@@ -96,6 +96,24 @@ public class Etudiant {
         s+="totalECTS : " + totalECTS + "\n";
         s+="------------------" + "\n";
         return s;
+    }
 
+    /**
+     * <p>Permet d'ajouter une inscription dans la liste des inscriptions pour l'étudiant</p>
+     * @param ins
+     */
+    public void ajouterInscription(InscriptionUe ins){
+        inscriptions.add(ins);
+    }
+
+    /**
+     * <p>Permet de supprimer une inscription dans la liste des inscriptions pour l'étudiant</p>
+     * <p>Verifie que la liste n'est pas vide</p>
+     * @param ins
+     */
+    public void supprimerInscription(InscriptionUe ins){
+        if(!inscriptions.isEmpty()){
+            inscriptions.remove(ins);
+        }
     }
 }

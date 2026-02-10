@@ -60,6 +60,22 @@ public class Formation {
         return s;
     }
 
+    /**
+     * <p>Permet d'ajouter une Ue dans la liste des Ue base pour la formation</p>
+     * @param ue
+     */
+    public void ajouterPrerequis(Ue ue){
+        ueBase.add(ue);
+    }
 
-
+    /**
+     * <p>Permet de supprimer une Ue dans la liste des Ue base pour la formation</p>
+     * <p>Verifie que la liste n'est pas vide</p>
+     * @param ue
+     */
+    public void supprimerPrerequis(Ue ue){
+        if(!ueBase.isEmpty()){
+            ueBase.remove(ue);
+        }
+    }
 }
