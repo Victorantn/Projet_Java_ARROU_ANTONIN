@@ -63,6 +63,14 @@ public class InscriptionUe {
         return statut;
     }
 
+    /**
+     * <p> un setter pour changer le statut de l'inscription</p>
+     * @param statut
+     */
+    public void setStatut(Statut statut) {
+        this.statut = statut;
+    }
+
 
     /**
      * <p>Le toString de notre classe InscriptionUe qui retourne les informations les plus importantes sous forme de chaine de charactères</p>
