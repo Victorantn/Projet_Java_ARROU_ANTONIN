@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -29,7 +30,7 @@ import java.util.LinkedHashMap;
  * <ul>
  *   <li>une UE est disponible si elle appartient aux UE obligatoires (base + spé) de l'étudiant
  *       ou si c'est une UE d'ouverture du catalogue global</li>
- *   <li>une UE n'est proposée à l'inscription que si tous ses prérequis sont validés</li>
+ *   <li>une UE n'est proposée à l'inscription que si tous ses prérequis sont validés et que l'on n'est pas sur le même semestre qu'une Ue prérequise</li>
  *   <li>le diplôme est validé si l'étudiant a au moins 180 ECTS validés
  *       et si toutes les UE obligatoires (base + spé) sont validées</li>
  *   <li>les UE d'ouverture peuvent compter dans les 180 ECTS mais ne sont pas obligatoires</li>
@@ -58,8 +59,11 @@ public class EtudiantsView {
     /** Sélecteur de parcours pour la création étudiant */
     private final ComboBox<Parcours> cbParcours = new ComboBox<>();
 
-    /** Champ de saisie de l'année universitaire lors d'une inscription */
-    private final TextField tfAnnee = new TextField("2025 / 2026");
+    /** Année de début de l'année universitaire courante */
+    private int anneeDebut = 2025;
+
+    /** Label affichant l'année universitaire courante */
+    private final Label lblAnnee = new Label();
 
     /** Sélecteur du semestre lors d'une inscription */
     private final ComboBox<Semestre> cbSemestre = new ComboBox<>();
@@ -108,7 +112,7 @@ public class EtudiantsView {
             @Override public Ue fromString(String s) { return null; }
         });
 
-        cbFormation.valueProperty().addListener((o,a,f) -> {
+        cbFormation.valueProperty().addListener((o, a, f) -> {
             cbParcours.setItems(FXCollections.observableArrayList());
             cbParcours.setValue(null);
             if (f == null) return;
@@ -120,9 +124,52 @@ public class EtudiantsView {
             cbParcours.setItems(list);
         });
 
-        tvEtudiants.getSelectionModel().selectedItemProperty().addListener((o,a,sel) -> {
+        tvEtudiants.getSelectionModel().selectedItemProperty().addListener((o, a, sel) -> {
             refreshInscriptions(sel);
             refreshUeCombo(sel);
+            forceRefreshCbUe();
+        });
+
+        cbSemestre.valueProperty().addListener((o, a, b) -> {
+            Etudiant sel = tvEtudiants.getSelectionModel().getSelectedItem();
+            refreshUeCombo(sel);
+            forceRefreshCbUe();
+        });
+
+        cbUe.setCellFactory(list -> new ListCell<>() {
+            @Override protected void updateItem(Ue u, boolean empty) {
+                super.updateItem(u, empty);
+                if (empty || u == null) {
+                    setText(null);
+                    setDisable(false);
+                    setOpacity(1.0);
+                    return;
+                }
+
+                Etudiant sel = tvEtudiants.getSelectionModel().getSelectedItem();
+                Semestre sem = cbSemestre.getValue();
+                String annee = formatAnnee(anneeDebut);
+
+                String tag = u.isOuverture() ? " (ouverture)" : "";
+                setText("#" + u.getCodeUe() + " - " + u.getNomUe() + tag);
+
+                boolean bloque = false;
+
+                if (sel != null && sem != null) {
+                    boolean dejaCeSemestre = sel.getInscriptions().stream().anyMatch(i ->
+                            i.getUe().getCodeUe() == u.getCodeUe() &&
+                                    i.getAnneeUniversitaire().equals(annee) &&
+                                    i.getSemestre() == sem
+                    );
+
+                    boolean dejaEnCoursOuValide = dejaEnCoursOuValide(sel, u);
+
+                    bloque = dejaCeSemestre || dejaEnCoursOuValide;
+                }
+
+                setDisable(bloque);
+                setOpacity(bloque ? 0.5 : 1.0);
+            }
         });
 
         buildEtudiantsTable();
@@ -132,6 +179,8 @@ public class EtudiantsView {
         root.setLeft(leftPane());
         root.setCenter(centerPane());
         root.setBottom(statusBar());
+
+        refreshLabelAnnee();
     }
 
     /**
@@ -180,10 +229,18 @@ public class EtudiantsView {
             tvInscriptions.setItems(FXCollections.observableArrayList());
             cbUe.setItems(FXCollections.observableArrayList());
             cbUe.setValue(null);
+            forceRefreshCbUe();
             lbl.setText("Étudiant supprimé");
         });
 
         Separator sep = new Separator();
+
+        HBox rowAnnee = new HBox(10, new Label("Année"), lblAnnee);
+        rowAnnee.setAlignment(Pos.CENTER_LEFT);
+
+        Button btnPasserAnnee = new Button("Passer année");
+        btnPasserAnnee.setMaxWidth(Double.MAX_VALUE);
+        btnPasserAnnee.setOnAction(e -> passerAnnee());
 
         Button btnInscrire = new Button("Inscrire à l'UE");
         btnInscrire.setMaxWidth(Double.MAX_VALUE);
@@ -194,25 +251,31 @@ public class EtudiantsView {
             if (sel == null) { lbl.setText("Sélectionner un étudiant"); return; }
             if (ue == null) { lbl.setText("Sélectionner une UE"); return; }
 
-            String annee = tfAnnee.getText().trim();
+            String annee = formatAnnee(anneeDebut);
             Semestre sem = cbSemestre.getValue();
-            if (annee.isEmpty() || sem == null) { lbl.setText("Année et semestre obligatoires"); return; }
+            if (sem == null) { lbl.setText("Semestre obligatoire"); return; }
 
-            if (!prerequisOk(sel, ue)) {
-                lbl.setText("Prérequis pas validés");
+            if (dejaEnCoursOuValide(sel, ue)) {
+                lbl.setText("UE déjà validée ou en cours");
                 return;
             }
 
-            boolean deja = sel.getInscriptions().stream().anyMatch(i ->
+            boolean dejaCeSemestre = sel.getInscriptions().stream().anyMatch(i ->
                     i.getUe().getCodeUe() == ue.getCodeUe() &&
                             i.getAnneeUniversitaire().equals(annee) &&
                             i.getSemestre() == sem
             );
-            if (deja) { lbl.setText("Déjà inscrit à cette UE pour ce semestre"); return; }
+            if (dejaCeSemestre) { lbl.setText("Déjà inscrit à cette UE pour ce semestre"); return; }
+
+            if (!prerequisOk(sel, ue, anneeDebut, sem)) {
+                lbl.setText("Prérequis pas validés");
+                return;
+            }
 
             sel.ajouterInscription(new InscriptionUe(ue, annee, sem));
             refreshInscriptions(sel);
             refreshUeCombo(sel);
+            forceRefreshCbUe();
             lbl.setText("Inscription ajoutée");
         });
 
@@ -222,7 +285,9 @@ public class EtudiantsView {
                 btnAddEtu, btnSupprEtu,
                 sep,
                 new Label("Inscrire l'étudiant sélectionné"),
-                tfAnnee, cbSemestre, cbUe, btnInscrire
+                rowAnnee,
+                btnPasserAnnee,
+                cbSemestre, cbUe, btnInscrire
         );
         box.setPadding(new Insets(10));
         box.setPrefWidth(350);
@@ -426,9 +491,15 @@ public class EtudiantsView {
             if (u.isOuverture()) unique.putIfAbsent(u.getCodeUe(), u);
         }
 
+        Semestre sem = cbSemestre.getValue();
         var eligible = FXCollections.<Ue>observableArrayList();
+
         for (Ue u : unique.values()) {
-            if (prerequisOk(sel, u)) eligible.add(u);
+            if (sem == null) continue;
+
+            if (!prerequisOk(sel, u, anneeDebut, sem)) continue;
+
+            eligible.add(u);
         }
 
         cbUe.setItems(eligible);
@@ -485,6 +556,7 @@ public class EtudiantsView {
 
         refreshInscriptions(etu);
         refreshUeCombo(etu);
+        forceRefreshCbUe();
         tvInscriptions.refresh();
 
         lbl.setText("Statut mis à jour: " + s.name());
@@ -501,6 +573,7 @@ public class EtudiantsView {
         etu.supprimerInscription(ins);
         refreshInscriptions(etu);
         refreshUeCombo(etu);
+        forceRefreshCbUe();
         lbl.setText("Inscription supprimée");
     }
 
@@ -570,13 +643,65 @@ public class EtudiantsView {
     }
 
     /**
+     * <p>Met à jour le label affichant l'année universitaire courante</p>
+     */
+    private void refreshLabelAnnee() {
+        lblAnnee.setText(formatAnnee(anneeDebut));
+    }
+
+    /**
+     * <p>Formate une année universitaire sous la forme AAAA / AAAA+1</p>
+     *
+     * @param startYear année de début
+     * @return chaîne formatée
+     */
+    private String formatAnnee(int startYear) {
+        return startYear + " / " + (startYear + 1);
+    }
+
+    /**
+     * <p>Passe à l'année universitaire suivante</p>
+     *
+     * <p>La sélection et l'affichage des UE sont mis à jour</p>
+     */
+    private void passerAnnee() {
+        anneeDebut++;
+        refreshLabelAnnee();
+
+        Etudiant sel = tvEtudiants.getSelectionModel().getSelectedItem();
+        refreshUeCombo(sel);
+        forceRefreshCbUe();
+
+        lbl.setText("Année passée à " + formatAnnee(anneeDebut));
+    }
+
+    /**
+     * <p>Force le rafraîchissement visuel de la ComboBox UE</p>
+     *
+     * <p>Permet d'actualiser le grisé des items selon le semestre et l'année</p>
+     */
+    private void forceRefreshCbUe() {
+        cbUe.hide();
+        cbUe.show();
+    }
+
+    /**
      * <p>Construit la barre de statut de la vue</p>
      *
      * @return un conteneur JavaFX affichant le message courant
      */
     private Parent statusBar() {
+        lbl.setStyle(
+                "-fx-font-size: 14px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 10;" +
+                        "-fx-background-color: #2b2b2b;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-background-radius: 8;"
+        );
+
         HBox b = new HBox(lbl);
-        b.setPadding(new Insets(8,10,0,10));
+        b.setPadding(new Insets(8, 10, 0, 10));
         return b;
     }
 
@@ -586,4 +711,110 @@ public class EtudiantsView {
      * @return le {@link Parent} racine
      */
     public Parent getRoot() { return root; }
+
+    /**
+     * <p>Indique si une UE est déjà en cours ou validée pour un étudiant</p>
+     *
+     * @param e étudiant concerné
+     * @param ue UE à tester
+     * @return true si l'étudiant a une inscription ENCOURS ou VALIDE sur cette UE sinon false
+     */
+    private boolean dejaEnCoursOuValide(Etudiant e, Ue ue) {
+        int code = ue.getCodeUe();
+        for (InscriptionUe ins : e.getInscriptions()) {
+            if (ins.getUe().getCodeUe() != code) continue;
+            if (ins.getStatut() == Statut.ENCOURS || ins.getStatut() == Statut.VALIDE) return true;
+        }
+        return false;
+    }
+
+    /**
+     * <p>Indique si tous les prérequis d'une UE sont validés avant l'inscription cible</p>
+     *
+     * <p>Cette règle empêche d'inscrire une UE et son prérequis sur le même semestre</p>
+     *
+     * @param e étudiant concerné
+     * @param ue UE pour laquelle on vérifie les prérequis
+     * @param anneeDebutCible année de début de l'inscription cible
+     * @param semCible semestre de l'inscription cible
+     * @return true si tous les prérequis sont validés avant ce semestre sinon false
+     */
+    private boolean prerequisOk(Etudiant e, Ue ue, int anneeDebutCible, Semestre semCible) {
+        for (Ue pre : ue.getUePreRequis()) {
+            if (!estValideeAvant(e, pre, anneeDebutCible, semCible)) return false;
+        }
+        return true;
+    }
+
+    /**
+     * <p>Indique si une UE est validée avant un semestre cible</p>
+     *
+     * <p>Une validation sur le même semestre ne débloque pas l'inscription à la suivante</p>
+     *
+     * @param e étudiant concerné
+     * @param ue UE à vérifier
+     * @param anneeDebutCible année de début cible
+     * @param semCible semestre cible
+     * @return true si une inscription VALIDE existe avant ce semestre sinon false
+     */
+    private boolean estValideeAvant(Etudiant e, Ue ue, int anneeDebutCible, Semestre semCible) {
+        int code = ue.getCodeUe();
+        for (InscriptionUe ins : e.getInscriptions()) {
+            if (ins.getUe().getCodeUe() != code) continue;
+            if (ins.getStatut() != Statut.VALIDE) continue;
+
+            int y = extractStartYear(ins.getAnneeUniversitaire());
+            if (y < 0) continue;
+
+            if (isBefore(y, ins.getSemestre(), anneeDebutCible, semCible)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * <p>Compare deux couples année de début et semestre</p>
+     *
+     * @param y1 année de début 1
+     * @param s1 semestre 1
+     * @param y2 année de début 2
+     * @param s2 semestre 2
+     * @return true si (y1,s1) est strictement avant (y2,s2) sinon false
+     */
+    private boolean isBefore(int y1, Semestre s1, int y2, Semestre s2) {
+        if (y1 != y2) return y1 < y2;
+
+        int o1 = semesterOrder(s1);
+        int o2 = semesterOrder(s2);
+        return o1 < o2;
+    }
+
+    /**
+     * <p>Donne un ordre numérique pour un semestre</p>
+     *
+     * @param s semestre
+     * @return 0 pour IMPAIR et 1 pour PAIR
+     */
+    private int semesterOrder(Semestre s) {
+        if (s == null) return 0;
+        return s == Semestre.IMPAIR ? 0 : 1;
+    }
+
+    /**
+     * <p>Extrait l'année de début depuis une chaîne AAAA / AAAA</p>
+     *
+     * @param anneeUniversitaire chaîne d'année universitaire
+     * @return année de début ou -1 si invalide
+     */
+    private int extractStartYear(String anneeUniversitaire) {
+        if (anneeUniversitaire == null) return -1;
+
+        String t = anneeUniversitaire.trim();
+        if (t.length() < 4) return -1;
+
+        try {
+            return Integer.parseInt(t.substring(0, 4));
+        } catch (NumberFormatException ex) {
+            return -1;
+        }
+    }
 }

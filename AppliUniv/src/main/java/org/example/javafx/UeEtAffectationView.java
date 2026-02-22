@@ -406,8 +406,17 @@ public class UeEtAffectationView {
      * @return un conteneur JavaFX affichant le message courant
      */
     private Parent statusBar() {
+        lbl.setStyle(
+                "-fx-font-size: 14px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 10;" +
+                        "-fx-background-color: #2b2b2b;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-background-radius: 8;"
+        );
+
         HBox b = new HBox(lbl);
-        b.setPadding(new Insets(8,10,0,10));
+        b.setPadding(new Insets(8, 10, 0, 10));
         return b;
     }
 
