@@ -34,7 +34,9 @@ public class PrereqDial {
     public static void show(Ue target, ObservableList<Ue> pool) {
         Dialog<Void> d = new Dialog<>();
         d.setTitle("Prérequis des UE" + target.getCodeUe());
-        d.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        ButtonType btAucun = new ButtonType("Aucun", ButtonBar.ButtonData.LEFT);
+        d.getDialogPane().getButtonTypes().addAll(btAucun, ButtonType.OK, ButtonType.CANCEL);
 
         ListView<Ue> lv = new ListView<>(pool);
         lv.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -53,6 +55,12 @@ public class PrereqDial {
                 if (cand.getCodeUe() == pre.getCodeUe()) lv.getSelectionModel().select(cand);
             }
         }
+
+        Button btnAucun = (Button) d.getDialogPane().lookupButton(btAucun);
+        btnAucun.addEventFilter(javafx.event.ActionEvent.ACTION, ev -> {
+            lv.getSelectionModel().clearSelection();
+            ev.consume(); // laisse le dial ouvert
+        });
 
         BorderPane pane = new BorderPane(lv);
         pane.setPadding(new Insets(10));
