@@ -1,6 +1,4 @@
--- ============================================================
---  Script d'insertion de données de test - Projet Universitaire
--- ============================================================
+/*Script d'insertion des données dans la BD*/
 
 -- Formation (pas de FK)
 INSERT INTO Formation (nomFormation) VALUES ('Licence Informatique');

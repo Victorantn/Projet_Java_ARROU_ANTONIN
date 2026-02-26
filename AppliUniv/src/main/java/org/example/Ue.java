@@ -102,4 +102,8 @@ public class Ue {
             uePreRequis.remove(ue);
         }
     }
+
+    public void setCodeUe(int id) {
+        this.codeUe = id;
+    }
 }

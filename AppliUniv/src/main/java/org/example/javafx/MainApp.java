@@ -29,6 +29,11 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) {
         AppState state = new AppState();
+        try {
+            state.chargerDepuisBD();
+        } catch (Exception ex) {
+            System.err.println("Erreur chargement BD : " + ex.getMessage());
+        }
         MainView view = new MainView(state);
 
         Scene scene = new Scene(view.getRoot(), 1200, 700);

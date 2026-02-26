@@ -122,4 +122,8 @@ public class Etudiant {
             inscriptions.remove(ins);
         }
     }
+
+    public void setNumeroEtudiant(int id) {
+        this.numeroEtudiant = id;
+    }
 }

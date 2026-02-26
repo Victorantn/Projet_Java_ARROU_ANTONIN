@@ -2,10 +2,13 @@ package org.example.javafx;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.example.Etudiant;
-import org.example.Formation;
-import org.example.Parcours;
-import org.example.Ue;
+import org.example.*;
+import org.example.dao.*;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Classe qui centralise l'état de l'application</p>
@@ -62,4 +65,56 @@ public class AppState {
      * @return la liste observable des {@link Ue}
      */
     public ObservableList<Ue> getUes() { return ues; }
+
+    /**
+     * <p>Charge toutes les données depuis la base Oracle dans l'ordre des dépendances FK</p>
+     *
+     * @throws SQLException en cas d'erreur de connexion ou de requête
+     */
+    public void chargerDepuisBD() throws SQLException {
+        FormationDAO formationDAO = new FormationDAO();
+        UeDAO ueDAO = new UeDAO();
+        ParcoursDAO parcoursDAO = new ParcoursDAO();
+        EtudiantDAO etudiantDAO = new EtudiantDAO();
+        InscriptionUeDAO inscriptionUeDAO = new InscriptionUeDAO();
+
+        // 1. Charger les formations
+        List<Formation> fs = formationDAO.findAll();
+        formations.setAll(fs);
+        Map<Integer, Formation> formationsParId = new HashMap<>();
+        for (Formation f : fs) formationsParId.put(f.getCodeFormation(), f);
+
+        // 2. Charger les UE + prérequis
+        List<Ue> us = ueDAO.findAll();
+        ues.setAll(us);
+        Map<Integer, Ue> uesParId = new HashMap<>();
+        for (Ue u : us) uesParId.put(u.getCodeUe(), u);
+
+        for (Ue u : us) {
+            List<Ue> prereqs = ueDAO.findPrerequis(u.getCodeUe(), uesParId);
+            for (Ue pre : prereqs) u.ajouterPrerequis(pre);
+        }
+
+        // 3. Peupler formation.getUeBase() depuis Formation_Ue
+        ueDAO.loadFormationUes(formationsParId, uesParId);
+
+        // 4. Charger les parcours (résout FK Formation)
+        List<Parcours> ps = parcoursDAO.findAll(formationsParId);
+        parcours.setAll(ps);
+        Map<Integer, Parcours> parcoursParId = new HashMap<>();
+        for (Parcours p : ps) parcoursParId.put(p.getIdParcours(), p);
+
+        // 5. Peupler parcours.getUeSpe() depuis Parcours_Ue
+        ueDAO.loadParcoursUes(parcoursParId, uesParId);
+
+        // 6. Charger les étudiants (résout FK Formation + Parcours)
+        List<Etudiant> es = etudiantDAO.findAll(formationsParId, parcoursParId);
+        etudiants.setAll(es);
+
+        // 7. Charger les inscriptions UE pour chaque étudiant
+        for (Etudiant e : es) {
+            List<InscriptionUe> ins = inscriptionUeDAO.infoEtudiant(e.getNumeroEtudiant(), uesParId);
+            for (InscriptionUe i : ins) e.ajouterInscription(i);
+        }
+    }
 }

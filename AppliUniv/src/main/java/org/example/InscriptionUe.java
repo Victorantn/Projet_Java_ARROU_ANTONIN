@@ -71,6 +71,10 @@ public class InscriptionUe {
         this.statut = statut;
     }
 
+    public void setCodeInscrip(int id) {
+        this.codeInscrip = id;
+    }
+
 
     /**
      * <p>Le toString de notre classe InscriptionUe qui retourne les informations les plus importantes sous forme de chaine de charactères</p>

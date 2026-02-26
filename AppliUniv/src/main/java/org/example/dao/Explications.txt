@@ -1,0 +1,13 @@
+Notre but est d'isoler la BD de l'utilisateur pour qu'il n'en voit pas la compléxité
+et qu'il ne puisse pas la modifier. C'est pour cela que nous utilisons le DAO.
+Il est en quelque sorte le serveur de notre application et qui discute avec les clients.
+Les clients sont la BD et les Users. Dans notre application javaFX, il traduit les objets
+de type java en type sql en gérant l'intégrité des données fournies. Et inversement, il obtient des objets
+de type SQL et les traduits en objets java directement affichable dans l'interface (ex : findAll()).
+
+Dans les fonctions DAO, on va retourner des exceptions de type SQLEXCEPTION
+car cela nous permet de connaitre le code d'erreur du côté BD, plus utile pour le déboggage.
+
+Alors pourquoi l'usage des Maps, on trouvé ça plus pratique pour la manipulation.
+
+Petit problème à noter sur le calcul des ECTS total il faudrait adapter la fonction en question.

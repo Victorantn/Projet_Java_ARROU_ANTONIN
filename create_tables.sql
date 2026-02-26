@@ -1,3 +1,5 @@
+/*Script de creation des tables*/
+
 DROP TABLE IF EXISTS Ue_Prerequis;
 DROP TABLE IF EXISTS Parcours_Ue;
 DROP TABLE IF EXISTS Formation_Ue;
