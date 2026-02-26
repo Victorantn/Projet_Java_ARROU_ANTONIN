@@ -78,4 +78,8 @@ public class Formation {
             ueBase.remove(ue);
         }
     }
+
+    public void setCodeFormation(int id) {
+        this.codeFormation = id;
+    }
 }

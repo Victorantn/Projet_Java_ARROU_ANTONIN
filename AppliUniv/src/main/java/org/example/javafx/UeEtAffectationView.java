@@ -11,6 +11,9 @@ import javafx.util.StringConverter;
 import org.example.Formation;
 import org.example.Parcours;
 import org.example.Ue;
+import org.example.dao.UeDAO;
+
+import java.sql.SQLException;
 
 /**
  * <p>Vue JavaFX dédiée à la gestion des UE et à leur affectation</p>
@@ -106,10 +109,15 @@ public class UeEtAffectationView {
         btnCreate.setOnAction(e -> {
             Ue u = UeDial.ask();
             if (u == null) return;
-            state.getUes().add(u);
-            tvUe.refresh();
-            refreshUeNonOuverture();
-            lbl.setText("UE créée");
+            try {
+                new UeDAO().insert(u);
+                state.getUes().add(u);
+                tvUe.refresh();
+                refreshUeNonOuverture();
+                lbl.setText("UE créée");
+            } catch (SQLException ex) {
+                lbl.setText("Erreur BD : " + ex.getMessage());
+            }
         });
 
         btnPrereq.setOnAction(e -> {
@@ -121,22 +129,35 @@ public class UeEtAffectationView {
             if (pool.isEmpty()) { lbl.setText("Aucune UE dispo en prérequis"); return; }
 
             PrereqDial.show(u, pool);
-            tvUe.refresh();
-            lbl.setText("Prérequis mis à jour");
+            try {
+                UeDAO dao = new UeDAO();
+                dao.deleteAllPrerequis(u.getCodeUe());
+                for (Ue pre : u.getUePreRequis()) {
+                    dao.insertPrerequis(u.getCodeUe(), pre.getCodeUe());
+                }
+                tvUe.refresh();
+                lbl.setText("Prérequis mis à jour");
+            } catch (SQLException ex) {
+                lbl.setText("Erreur BD : " + ex.getMessage());
+            }
         });
 
         btnDelete.setOnAction(e -> {
             Ue u = tvUe.getSelectionModel().getSelectedItem();
             if (u == null) { lbl.setText("Sélectionner une UE"); return; }
 
-            for (Formation f : state.getFormations()) f.getUeBase().removeIf(x -> x.getCodeUe() == u.getCodeUe());
-            for (Parcours p : state.getParcours()) p.getUeSpe().removeIf(x -> x.getCodeUe() == u.getCodeUe());
-
-            state.getUes().remove(u);
-            tvUe.refresh();
-            refreshUeNonOuverture();
-            refreshAffectees();
-            lbl.setText("UE supprimée");
+            try {
+                new UeDAO().delete(u.getCodeUe());
+                for (Formation f : state.getFormations()) f.getUeBase().removeIf(x -> x.getCodeUe() == u.getCodeUe());
+                for (Parcours p : state.getParcours()) p.getUeSpe().removeIf(x -> x.getCodeUe() == u.getCodeUe());
+                state.getUes().remove(u);
+                tvUe.refresh();
+                refreshUeNonOuverture();
+                refreshAffectees();
+                lbl.setText("UE supprimée");
+            } catch (SQLException ex) {
+                lbl.setText("Erreur BD : " + ex.getMessage());
+            }
         });
 
         HBox actions = new HBox(10, btnCreate, btnPrereq, btnDelete);
@@ -353,10 +374,24 @@ public class UeEtAffectationView {
 
         if (base) {
             if (f == null) { lbl.setText("Choisir une formation"); return; }
-            if (!containsByCode(f.getUeBase(), u)) f.getUeBase().add(u);
+            if (containsByCode(f.getUeBase(), u)) { lbl.setText("UE déjà affectée"); return; }
+            try {
+                new UeDAO().insertFormationUe(f.getCodeFormation(), u.getCodeUe());
+                f.getUeBase().add(u);
+            } catch (SQLException ex) {
+                lbl.setText("Erreur BD : " + ex.getMessage());
+                return;
+            }
         } else {
             if (p == null) { lbl.setText("Choisir un parcours"); return; }
-            if (!containsByCode(p.getUeSpe(), u)) p.getUeSpe().add(u);
+            if (containsByCode(p.getUeSpe(), u)) { lbl.setText("UE déjà affectée"); return; }
+            try {
+                new UeDAO().insertParcoursUe(p.getIdParcours(), u.getCodeUe());
+                p.getUeSpe().add(u);
+            } catch (SQLException ex) {
+                lbl.setText("Erreur BD : " + ex.getMessage());
+                return;
+            }
         }
 
         refreshAffectees();
@@ -378,10 +413,22 @@ public class UeEtAffectationView {
 
         if (base) {
             if (f == null) { lbl.setText("Choisir une formation"); return; }
-            f.getUeBase().removeIf(x -> x.getCodeUe() == u.getCodeUe());
+            try {
+                new UeDAO().deleteFormationUe(f.getCodeFormation(), u.getCodeUe());
+                f.getUeBase().removeIf(x -> x.getCodeUe() == u.getCodeUe());
+            } catch (SQLException ex) {
+                lbl.setText("Erreur BD : " + ex.getMessage());
+                return;
+            }
         } else {
             if (p == null) { lbl.setText("Choisir un parcours"); return; }
-            p.getUeSpe().removeIf(x -> x.getCodeUe() == u.getCodeUe());
+            try {
+                new UeDAO().deleteParcoursUe(p.getIdParcours(), u.getCodeUe());
+                p.getUeSpe().removeIf(x -> x.getCodeUe() == u.getCodeUe());
+            } catch (SQLException ex) {
+                lbl.setText("Erreur BD : " + ex.getMessage());
+                return;
+            }
         }
 
         refreshAffectees();

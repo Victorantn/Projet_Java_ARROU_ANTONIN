@@ -90,4 +90,8 @@ public class Parcours{
             ueSpe.remove(ue);
         }
     }
+
+    public void setCodeParcours(int id) {
+        this.codeParcours = id;
+    }
 }

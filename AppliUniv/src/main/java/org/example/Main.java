@@ -19,7 +19,7 @@ public class Main {
      *
      * @param args arguments de la ligne de commande transmis à l'application
      */
-    public static void main(String[] args) {
+    public static void main(String[] args){
         Application.launch(MainApp.class, args);
     }
 }

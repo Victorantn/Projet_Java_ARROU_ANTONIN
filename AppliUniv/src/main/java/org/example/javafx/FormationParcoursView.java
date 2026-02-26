@@ -7,6 +7,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import org.example.Formation;
 import org.example.Parcours;
+import org.example.dao.FormationDAO;
+import org.example.dao.ParcoursDAO;
+
+import java.sql.SQLException;
 
 /**
  * <p>Vue JavaFX dédiée à la gestion des formations et des parcours</p>
@@ -94,8 +98,14 @@ public class FormationParcoursView {
             d.setHeaderText(null);
             d.setContentText("Nom formation :");
             d.showAndWait().map(String::trim).filter(s -> !s.isEmpty()).ifPresent(n -> {
-                state.getFormations().add(new Formation(n));
-                lbl.setText("Formation ajoutée");
+                Formation f = new Formation(n);
+                try {
+                    new FormationDAO().insert(f);
+                    state.getFormations().add(f);
+                    lbl.setText("Formation ajoutée");
+                } catch (SQLException ex) {
+                    lbl.setText("Erreur BD : " + ex.getMessage());
+                }
             });
         });
 
@@ -103,11 +113,15 @@ public class FormationParcoursView {
             Formation f = lvFormations.getSelectionModel().getSelectedItem();
             if (f == null) { lbl.setText("Sélectionner une formation"); return; }
 
-            state.getParcours().removeIf(p -> p.getFormation() == f);
-            state.getFormations().remove(f);
-
-            lvParcours.setItems(FXCollections.observableArrayList());
-            lbl.setText("Formation supprimée");
+            try {
+                new FormationDAO().delete(f.getCodeFormation());
+                state.getParcours().removeIf(p -> p.getFormation() == f);
+                state.getFormations().remove(f);
+                lvParcours.setItems(FXCollections.observableArrayList());
+                lbl.setText("Formation supprimée");
+            } catch (SQLException ex) {
+                lbl.setText("Erreur BD : " + ex.getMessage());
+            }
         });
 
         Button addP = new Button("Ajouter parcours");
@@ -124,9 +138,15 @@ public class FormationParcoursView {
             d.setHeaderText(null);
             d.setContentText("Nom parcours :");
             d.showAndWait().map(String::trim).filter(s -> !s.isEmpty()).ifPresent(n -> {
-                state.getParcours().add(new Parcours(n, f));
-                refreshParcours(f);
-                lbl.setText("Parcours ajouté");
+                Parcours p = new Parcours(n, f);
+                try {
+                    new ParcoursDAO().insert(p);
+                    state.getParcours().add(p);
+                    refreshParcours(f);
+                    lbl.setText("Parcours ajouté");
+                } catch (SQLException ex) {
+                    lbl.setText("Erreur BD : " + ex.getMessage());
+                }
             });
         });
 
@@ -135,9 +155,14 @@ public class FormationParcoursView {
             Formation f = lvFormations.getSelectionModel().getSelectedItem();
             if (p == null) { lbl.setText("Sélectionner un parcours"); return; }
 
-            state.getParcours().remove(p);
-            refreshParcours(f);
-            lbl.setText("Parcours supprimé");
+            try {
+                new ParcoursDAO().delete(p.getIdParcours());
+                state.getParcours().remove(p);
+                refreshParcours(f);
+                lbl.setText("Parcours supprimé");
+            } catch (SQLException ex) {
+                lbl.setText("Erreur BD : " + ex.getMessage());
+            }
         });
 
         VBox left = new VBox(10, new Label("Formations"), lvFormations, addF, delF);

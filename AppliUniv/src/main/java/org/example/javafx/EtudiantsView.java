@@ -10,7 +10,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.util.StringConverter;
 import org.example.*;
+import org.example.dao.EtudiantDAO;
+import org.example.dao.InscriptionUeDAO;
 
+import java.sql.SQLException;
 import java.util.LinkedHashMap;
 
 /**
@@ -212,12 +215,18 @@ public class EtudiantsView {
                 return;
             }
 
-            state.getEtudiants().add(new Etudiant(nom, prenom, f, p));
-            tfNom.clear();
-            tfPrenom.clear();
-            cbFormation.setValue(null);
-            cbParcours.setValue(null);
-            lbl.setText("Étudiant ajouté");
+            Etudiant etudiant = new Etudiant(nom, prenom, f, p);
+            try {
+                new EtudiantDAO().insert(etudiant);
+                state.getEtudiants().add(etudiant);
+                tfNom.clear();
+                tfPrenom.clear();
+                cbFormation.setValue(null);
+                cbParcours.setValue(null);
+                lbl.setText("Étudiant ajouté");
+            } catch (SQLException ex) {
+                lbl.setText("Erreur BD : " + ex.getMessage());
+            }
         });
 
         Button btnSupprEtu = new Button("Supprimer étudiant");
@@ -225,12 +234,17 @@ public class EtudiantsView {
         btnSupprEtu.setOnAction(e -> {
             Etudiant sel = tvEtudiants.getSelectionModel().getSelectedItem();
             if (sel == null) { lbl.setText("Sélectionner un étudiant"); return; }
-            state.getEtudiants().remove(sel);
-            tvInscriptions.setItems(FXCollections.observableArrayList());
-            cbUe.setItems(FXCollections.observableArrayList());
-            cbUe.setValue(null);
-            forceRefreshCbUe();
-            lbl.setText("Étudiant supprimé");
+            try {
+                new EtudiantDAO().delete(sel.getNumeroEtudiant());
+                state.getEtudiants().remove(sel);
+                tvInscriptions.setItems(FXCollections.observableArrayList());
+                cbUe.setItems(FXCollections.observableArrayList());
+                cbUe.setValue(null);
+                forceRefreshCbUe();
+                lbl.setText("Étudiant supprimé");
+            } catch (SQLException ex) {
+                lbl.setText("Erreur BD : " + ex.getMessage());
+            }
         });
 
         Separator sep = new Separator();
@@ -272,11 +286,17 @@ public class EtudiantsView {
                 return;
             }
 
-            sel.ajouterInscription(new InscriptionUe(ue, annee, sem));
-            refreshInscriptions(sel);
-            refreshUeCombo(sel);
-            forceRefreshCbUe();
-            lbl.setText("Inscription ajoutée");
+            InscriptionUe ins = new InscriptionUe(ue, annee, sem);
+            try {
+                new InscriptionUeDAO().insertInscription(ins, sel.getNumeroEtudiant());
+                sel.ajouterInscription(ins);
+                refreshInscriptions(sel);
+                refreshUeCombo(sel);
+                forceRefreshCbUe();
+                lbl.setText("Inscription ajoutée");
+            } catch (SQLException ex) {
+                lbl.setText("Erreur BD : " + ex.getMessage());
+            }
         });
 
         VBox box = new VBox(10,
@@ -552,14 +572,17 @@ public class EtudiantsView {
         InscriptionUe ins = tvInscriptions.getSelectionModel().getSelectedItem();
         if (etu == null || ins == null) { lbl.setText("Sélectionner étudiant et inscription"); return; }
 
-        ins.setStatut(s);
-
-        refreshInscriptions(etu);
-        refreshUeCombo(etu);
-        forceRefreshCbUe();
-        tvInscriptions.refresh();
-
-        lbl.setText("Statut mis à jour: " + s.name());
+        try {
+            new InscriptionUeDAO().majStatut(ins.getCodeInscrip(), s);
+            ins.setStatut(s);
+            refreshInscriptions(etu);
+            refreshUeCombo(etu);
+            forceRefreshCbUe();
+            tvInscriptions.refresh();
+            lbl.setText("Statut mis à jour: " + s.name());
+        } catch (SQLException ex) {
+            lbl.setText("Erreur BD : " + ex.getMessage());
+        }
     }
 
     /**
@@ -570,11 +593,16 @@ public class EtudiantsView {
         InscriptionUe ins = tvInscriptions.getSelectionModel().getSelectedItem();
         if (etu == null || ins == null) { lbl.setText("Sélectionner étudiant et inscription"); return; }
 
-        etu.supprimerInscription(ins);
-        refreshInscriptions(etu);
-        refreshUeCombo(etu);
-        forceRefreshCbUe();
-        lbl.setText("Inscription supprimée");
+        try {
+            new InscriptionUeDAO().deleteInscription(ins.getCodeInscrip());
+            etu.supprimerInscription(ins);
+            refreshInscriptions(etu);
+            refreshUeCombo(etu);
+            forceRefreshCbUe();
+            lbl.setText("Inscription supprimée");
+        } catch (SQLException ex) {
+            lbl.setText("Erreur BD : " + ex.getMessage());
+        }
     }
 
     /**
@@ -667,6 +695,16 @@ public class EtudiantsView {
     private void passerAnnee() {
         anneeDebut++;
         refreshLabelAnnee();
+
+        EtudiantDAO dao = new EtudiantDAO();
+        for (Etudiant e : state.getEtudiants()) {
+            try {
+                dao.updateTotalECTS(e.getNumeroEtudiant(), ectsValidesTotal(e));
+            } catch (SQLException ex) {
+                lbl.setText("Erreur BD màj ECTS : " + ex.getMessage());
+                return;
+            }
+        }
 
         Etudiant sel = tvEtudiants.getSelectionModel().getSelectedItem();
         refreshUeCombo(sel);
