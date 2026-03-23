@@ -1,4 +1,4 @@
-package org.example;
+package org.projetjava.antonin_arrou;
 
 public enum Statut {
     VALIDE("validé"),

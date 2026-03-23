@@ -1,7 +1,7 @@
-package org.example.dao;
+package org.projetjava.antonin_arrou.dao;
 
-import org.example.ConnexionBD;
-import org.example.Formation;
+import org.projetjava.antonin_arrou.ConnexionBD;
+import org.projetjava.antonin_arrou.Formation;
 
 import java.sql.*;
 import java.util.ArrayList;

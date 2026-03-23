@@ -1,10 +1,10 @@
-package org.example.javafx;
+package org.projetjava.antonin_arrou.javafx;
 
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import org.example.Ue;
+import org.projetjava.antonin_arrou.Ue;
 
 import java.util.ArrayList;
 

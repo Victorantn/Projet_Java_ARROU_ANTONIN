@@ -1,10 +1,10 @@
-package org.example.dao;
+package org.projetjava.antonin_arrou.dao;
 
-import org.example.ConnexionBD;
-import org.example.InscriptionUe;
-import org.example.Semestre;
-import org.example.Statut;
-import org.example.Ue;
+import org.projetjava.antonin_arrou.ConnexionBD;
+import org.projetjava.antonin_arrou.InscriptionUe;
+import org.projetjava.antonin_arrou.Semestre;
+import org.projetjava.antonin_arrou.Statut;
+import org.projetjava.antonin_arrou.Ue;
 
 import java.sql.*;
 import java.util.ArrayList;

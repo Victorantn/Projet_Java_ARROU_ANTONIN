@@ -1,4 +1,4 @@
-package org.example.javafx;
+package org.projetjava.antonin_arrou.javafx;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -23,12 +23,12 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
-import org.example.Etudiant;
-import org.example.Formation;
-import org.example.InscriptionUe;
-import org.example.Parcours;
-import org.example.Statut;
-import org.example.Ue;
+import org.projetjava.antonin_arrou.Etudiant;
+import org.projetjava.antonin_arrou.Formation;
+import org.projetjava.antonin_arrou.InscriptionUe;
+import org.projetjava.antonin_arrou.Parcours;
+import org.projetjava.antonin_arrou.Statut;
+import org.projetjava.antonin_arrou.Ue;
 
 import java.util.ArrayList;
 import java.util.Comparator;

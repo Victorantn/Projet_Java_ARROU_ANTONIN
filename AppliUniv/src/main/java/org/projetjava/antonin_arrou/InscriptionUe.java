@@ -1,4 +1,4 @@
-package org.example;
+package org.projetjava.antonin_arrou;
 
 public class InscriptionUe {
     private static int compteur=0;/*Sert a connaitre le numéro de la dernière inscription instanciée*/

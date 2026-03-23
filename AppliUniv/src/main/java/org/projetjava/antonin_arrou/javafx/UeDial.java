@@ -1,9 +1,9 @@
-package org.example.javafx;
+package org.projetjava.antonin_arrou.javafx;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import org.example.Ue;
+import org.projetjava.antonin_arrou.Ue;
 
 /**
  * <p>Boîte de dialogue permettant de créer une nouvelle UE</p>

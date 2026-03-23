@@ -1,14 +1,14 @@
-package org.example.javafx;
+package org.projetjava.antonin_arrou.javafx;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import org.example.Formation;
-import org.example.Parcours;
-import org.example.dao.FormationDAO;
-import org.example.dao.ParcoursDAO;
+import org.projetjava.antonin_arrou.Formation;
+import org.projetjava.antonin_arrou.Parcours;
+import org.projetjava.antonin_arrou.dao.FormationDAO;
+import org.projetjava.antonin_arrou.dao.ParcoursDAO;
 
 import java.sql.SQLException;
 

@@ -1,4 +1,4 @@
-package org.example;
+package org.projetjava.antonin_arrou;
 
 import java.util.ArrayList;
 

@@ -1,9 +1,9 @@
-package org.example.javafx;
+package org.projetjava.antonin_arrou.javafx;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.example.*;
-import org.example.dao.*;
+import org.projetjava.antonin_arrou.*;
+import org.projetjava.antonin_arrou.dao.*;
 
 import java.sql.SQLException;
 import java.util.HashMap;

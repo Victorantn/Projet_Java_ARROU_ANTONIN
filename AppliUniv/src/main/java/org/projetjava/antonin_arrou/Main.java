@@ -1,7 +1,7 @@
-package org.example;
+package org.projetjava.antonin_arrou;
 
 import javafx.application.Application;
-import org.example.javafx.MainApp;
+import org.projetjava.antonin_arrou.javafx.MainApp;
 
 /**
  * <p>Point d'entrée de l'application</p>

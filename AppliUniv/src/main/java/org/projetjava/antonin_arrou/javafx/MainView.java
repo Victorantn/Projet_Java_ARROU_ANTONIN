@@ -1,4 +1,4 @@
-package org.example.javafx;
+package org.projetjava.antonin_arrou.javafx;
 
 import javafx.geometry.Insets;
 import javafx.scene.Parent;

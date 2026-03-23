@@ -1,13 +1,13 @@
 /*Script de creation des tables*/
 
-DROP TABLE IF EXISTS Ue_Prerequis;
-DROP TABLE IF EXISTS Parcours_Ue;
-DROP TABLE IF EXISTS Formation_Ue;
-DROP TABLE IF EXISTS InscriptionUe;
-DROP TABLE IF EXISTS Etudiant;
-DROP TABLE IF EXISTS Parcours;
-DROP TABLE IF EXISTS Ue;
-DROP TABLE IF EXISTS Formation;
+DROP TABLE Ue_Prerequis;
+DROP TABLE Parcours_Ue;
+DROP TABLE Formation_Ue;
+DROP TABLE InscriptionUe;
+DROP TABLE Etudiant;
+DROP TABLE Parcours;
+DROP TABLE Ue;
+DROP TABLE Formation;
 
 CREATE TABLE Formation (
     codeFormation INT           GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

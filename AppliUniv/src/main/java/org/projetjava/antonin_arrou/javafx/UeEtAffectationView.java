@@ -1,4 +1,4 @@
-package org.example.javafx;
+package org.projetjava.antonin_arrou.javafx;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -8,10 +8,10 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.util.StringConverter;
-import org.example.Formation;
-import org.example.Parcours;
-import org.example.Ue;
-import org.example.dao.UeDAO;
+import org.projetjava.antonin_arrou.Formation;
+import org.projetjava.antonin_arrou.Parcours;
+import org.projetjava.antonin_arrou.Ue;
+import org.projetjava.antonin_arrou.dao.UeDAO;
 
 import java.sql.SQLException;
 

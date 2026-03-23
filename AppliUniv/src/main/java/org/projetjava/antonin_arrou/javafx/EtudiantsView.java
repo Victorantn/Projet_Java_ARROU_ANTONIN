@@ -1,4 +1,4 @@
-package org.example.javafx;
+package org.projetjava.antonin_arrou.javafx;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -9,9 +9,9 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.util.StringConverter;
-import org.example.*;
-import org.example.dao.EtudiantDAO;
-import org.example.dao.InscriptionUeDAO;
+import org.projetjava.antonin_arrou.*;
+import org.projetjava.antonin_arrou.dao.EtudiantDAO;
+import org.projetjava.antonin_arrou.dao.InscriptionUeDAO;
 
 import java.sql.SQLException;
 import java.util.LinkedHashMap;

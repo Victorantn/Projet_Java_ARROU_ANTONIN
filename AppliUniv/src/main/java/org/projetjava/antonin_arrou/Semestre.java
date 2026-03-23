@@ -1,4 +1,4 @@
-package org.example;
+package org.projetjava.antonin_arrou;
 
 public enum Semestre {
     PAIR("Semestre pair"),
