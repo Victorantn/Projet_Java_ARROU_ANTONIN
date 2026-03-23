@@ -9,15 +9,15 @@ import javafx.scene.layout.BorderPane;
 /**
  * <p>Vue principale de l'application</p>
  *
- * <p>Elle organise les différentes fonctionnalités dans des onglets :</p>
+ * <p>Elle regroupe les fonctions de l'application dans quatre onglets :</p>
  * <ul>
- *   <li>gestion des formations et parcours</li>
- *   <li>gestion des UE et de leur affectation</li>
- *   <li>gestion des étudiants</li>
+ *   <li>formations et parcours</li>
+ *   <li>UE et affectation des UE</li>
+ *   <li>etudiants</li>
+ *   <li>statistiques</li>
  * </ul>
  *
- * <p>Chaque onglet reçoit l'état partagé {@link AppState}
- * afin que toutes les vues manipulent les mêmes données</p>
+ * <p>Chaque onglet utilise le meme etat partage {@link AppState}</p>
  */
 public class MainView {
 
@@ -27,18 +27,27 @@ public class MainView {
     /**
      * <p>Construit la vue principale et initialise les onglets</p>
      *
-     * @param state état partagé de l'application
+     * @param state etat partage de l'application
      */
     public MainView(AppState state) {
         root.setPadding(new Insets(10));
 
-        TabPane tabs = new TabPane(
-                new Tab("Formations / Parcours", new FormationParcoursView(state).getRoot()),
-                new Tab("UE / Affectation UE", new UeEtAffectationView(state).getRoot()),
-                new Tab("Etudiants", new EtudiantsView(state).getRoot())
-        );
+        FormationParcoursView formationParcoursView = new FormationParcoursView(state);
+        UeEtAffectationView ueEtAffectationView = new UeEtAffectationView(state);
+        EtudiantsView etudiantsView = new EtudiantsView(state);
+        StatistiquesView statistiquesView = new StatistiquesView(state);
+
+        Tab tabFormation = new Tab("Formations / Parcours", formationParcoursView.getRoot());
+        Tab tabUe = new Tab("UE / Affectation UE", ueEtAffectationView.getRoot());
+        Tab tabEtudiants = new Tab("Etudiants", etudiantsView.getRoot());
+        Tab tabStats = new Tab("Statistiques", statistiquesView.getRoot());
+
+        TabPane tabs = new TabPane(tabFormation, tabUe, tabEtudiants, tabStats);
 
         tabs.getTabs().forEach(t -> t.setClosable(false));
+        tabs.getSelectionModel().selectedItemProperty().addListener((o, a, selected) -> {
+            if (selected == tabStats) statistiquesView.refreshData();
+        });
 
         root.setCenter(tabs);
     }
